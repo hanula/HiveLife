@@ -7,6 +7,7 @@ local pairs = pairs
 local unpack = unpack
 local dht = dht
 local ds18b20 = ds18b20
+local print = print
 
 -- pin setup
 local DHT_PIN = 2
@@ -22,15 +23,20 @@ function sensor_1()
         return {temperature=temp, humidity=humi}
 
     elseif status == dht.ERROR_CHECKSUM then
-        print( "DHT Checksum error." )
+        print("Sensor error: DHT Checksum error." )
     elseif status == dht.ERROR_TIMEOUT then
-        print( "DHT timed out." )
+        print("Sensor error: DHT timed out." )
     end
 end
 
 
 function sensor_2()
     local temp = ds18b20.read()
+    if temp == nil then
+        print("Sensor error: Cannot read sensor 2.")
+        return
+    end
+
     if temp < 60 then
         return {temperature=temp}
     end
