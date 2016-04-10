@@ -1,0 +1,59 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+    <h1>HiveLife sensors</h1>
+    <div id="charts"></div>
+<style>
+    #charts {width: 100%;}
+    #charts > div {width: 50%; height: 450px; display: inline-block;}
+</style>
+<script>
+
+var lineColorByType = {
+    'temperature': '#EA4E4E',   // red-ish
+    'humidity': '#7BA2E6'       // blue-ish
+}
+
+function createChart(chartElement, sensor, measurements) {
+    var dates = $.map(measurements, function(item) { return item.created_at}),
+        values = $.map(measurements, function(item) { return item.value});
+        data = [{
+        x: dates,
+        y: values,
+        line: {
+            color: lineColorByType[sensor.type_name] || 'blue'
+        }
+    }];
+
+    var layout = {
+        title: sensor.name + ' / ' + sensor.type_name,
+        xaxis: {
+            showgrid: false,
+            tickformat: "%m"
+        }
+    };
+
+    Plotly.newPlot(chartElement, data, layout);
+}
+
+function loadSensor(sensor) {
+    var chartElement = $('<div>').appendTo('#charts')[0],
+        path = ['/api/sensors', sensor.name, sensor.type_name, 'measurements'];
+
+    $.get(path.join('/')).then(function(data) {
+        createChart(chartElement, sensor, data);
+    });
+}
+
+function initSensors(sensors) {
+    $.each(sensors, function(_, sensor) {
+        loadSensor(sensor);
+    });
+}
+
+$(function() {
+    $.get('/api/sensors').then(initSensors);
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+marshmallow==2.6.1
+pyramid==1.6.1
+pyramid-debugtoolbar==2.4.2
+pyramid-jinja2==2.6.2
+pyramid-tm==0.12.1
+SQLAlchemy==1.0.12
