@@ -14,13 +14,19 @@ function setup()
     wifi.setphymode(wifi.PHYMODE_N)
     wifi.sleeptype(wifi.LIGHT_SLEEP)
     wifi.sta.config(config.WIFI_NAME , config.WIFI_PASSWORD)
+    print("Connecting to '" .. config.WIFI_NAME .. "' network.")
 
     -- setup temp sensor
     sensors.setup()
 end
 
 -- POSTs sensor JSON data to the `config.SERVER_URL` address.
-function upload_data(data)
+function upload_data(sensor_data)
+    data = {
+        location = config.LOCATION,
+        hive = config.HIVE,
+        measurements = sensor_data
+    }
     data = cjson.encode(data)
     print("Sending data: " .. data)
 
@@ -39,8 +45,8 @@ end
 
 function main_loop()
     print("Checking sensors")
-    data = sensors.collect_data()
-    upload_data(data)
+    sensor_data = sensors.collect_data()
+    upload_data(sensor_data)
 end
 
 
