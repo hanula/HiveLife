@@ -6,7 +6,7 @@ require("cjson")
 require("sensors")
 config = require("config")
 
-LOOP_INTERVAL_SEC = 3
+LOOP_INTERVAL_SEC = 30
 
 function setup()
     -- setup wifi connection
